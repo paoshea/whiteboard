@@ -1,0 +1,16 @@
+/node_modules
+/dist
+.env
+
+# Ignore all Word documents, audio files, and other non-code files
+*.docx
+*.wav
+*.mp3
+*.pdf
+
+# Ignore specific folders
+/path/to/OneDrive
+
+# Ignore system files
+.DS_Store
+Thumbs.db

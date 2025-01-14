@@ -1,0 +1,11 @@
+{
+  "semi": true,                 // Enforce semicolons
+  "singleQuote": true,          // Use single quotes for strings
+  "trailingComma": "es5",       // Add trailing commas where valid in ES5
+  "tabWidth": 2,                // Set indentation width to 2 spaces
+  "printWidth": 80,             // Max line length
+  "jsxSingleQuote": false,      // Double quotes for JSX attributes
+  "bracketSpacing": true,       // Add space inside object braces
+  "arrowParens": "always",      // Include parentheses for arrow functions
+  "endOfLine": "auto"           // Handle different OS line endings
+}
