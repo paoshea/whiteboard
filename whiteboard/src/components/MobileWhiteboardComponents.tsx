@@ -157,21 +157,37 @@ const MobileNavigation = ({ pages, currentPageIndex, onPageChange }) => (
 );
 
 const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
+  useEffect(() => {
+    const preventBehavior = (e) => {
+      e.preventDefault();
+    };
+
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    
+    document.addEventListener('touchmove', preventBehavior, { passive: false });
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.removeEventListener('touchmove', preventBehavior);
+    };
+  }, []);
+
   const handleTouchStart = (e) => {
-    e.preventDefault(); // Prevent scrolling on touch
-    if (platform.isIOS) {
-      // iOS-specific touch handling
-      const touch = e.touches[0];
-      props.onDrawStart(touch.clientX, touch.clientY);
-    } else {
-      // Android and other devices
-      const touch = e.touches[0];
-      props.onDrawStart(touch.clientX, touch.clientY);
-    }
+    e.preventDefault();
+    e.stopPropagation();
+    const touch = e.touches[0];
+    props.onDrawStart(touch.clientX, touch.clientY);
   };
 
   const handleTouchMove = (e) => {
-    e.preventDefault(); // Prevent scrolling on touch
+    e.preventDefault();
+    e.stopPropagation();
     if (props.isDrawing) {
       const touch = e.touches[0];
       props.onDraw(touch.clientX, touch.clientY);
@@ -179,18 +195,26 @@ const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden">
+    <div className="absolute inset-0 touch-none overscroll-none"
+         style={{
+           overflow: 'hidden',
+           WebkitOverflowScrolling: 'touch',
+         }}>
       <canvas
         ref={canvasRef}
-        className="touch-none w-full h-full bg-white"
+        className="w-full h-full bg-white touch-none"
         style={{
           touchAction: 'none',
           WebkitTouchCallout: 'none',
           WebkitUserSelect: 'none',
+          WebkitTapHighlightColor: 'transparent',
           userSelect: 'none',
           position: 'absolute',
           top: 0,
-          left: 0
+          left: 0,
+          overscrollBehavior: 'none',
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none'
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
