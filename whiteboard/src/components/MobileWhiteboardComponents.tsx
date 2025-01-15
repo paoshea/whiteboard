@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Camera, Eraser, Tag, PlusCircle, ChevronLeft, ChevronRight, Edit2, MoreVertical, ChevronDown 
 } from 'lucide-react';
@@ -8,7 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@/components/ui/Sheet";
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 // Custom hook for detecting platform

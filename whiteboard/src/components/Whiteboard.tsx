@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Camera, Eraser, Tag, PlusCircle, ChevronLeft, ChevronRight, Copy,
   Edit2, Trash2, Layout, ChevronUp, ChevronDown, Files, Search,
   Folder, FolderPlus, Upload, Download, Users, Filter, Share2,
   SlidersHorizontal, Clock, Star, UserPlus, Save, History
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import Card, { CardContent } from '@/components/ui/Card'; 
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input'; 
 import {
   Dialog,
   DialogContent,
@@ -15,20 +15,20 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs";
+} from "@/components/ui/Tabs";
 
 // Collaboration Types
 type Collaborator = {

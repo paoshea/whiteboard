@@ -1,0 +1,16 @@
+modules = ["nodejs-20"]
+# .replit
+run = "cd whiteboard && npm run dev"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 3001
+externalPort = 3001
+
+[deployment]
+build = ["sh", "-c", "cd whiteboard && npm run build"]
+deploymentTarget = "static"
+publicDir = "whiteboard/dist"
