@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+
+import { useState, useRef, useEffect } from 'react';
 import { 
-  Camera, Eraser, Tag, PlusCircle, ChevronLeft, ChevronRight, Edit2, MoreVertical, ChevronDown 
+  Camera, Eraser, Tag, PlusCircle, ChevronLeft, ChevronRight, Edit2, MoreVertical, ChevronDown, Menu, Share2, Trash2 
 } from 'lucide-react';
 import {
   Sheet,
@@ -9,9 +10,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/Sheet";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/DropdownMenu";
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
-// Custom hook for detecting platform
 const usePlatform = () => {
   const [platform, setPlatform] = useState({
     isIOS: false,
@@ -65,7 +74,7 @@ const MobileDrawingControls = ({ color, setColor, lineWidth, setLineWidth }) => 
   <Sheet>
     <SheetTrigger asChild>
       <Button
-        className="fixed bottom-20 right-4 rounded-full shadow-lg z-20" //Added z-index
+        className="fixed bottom-20 right-4 rounded-full shadow-lg z-20"
         size="icon"
       >
         <Edit2 className="h-6 w-6" />
@@ -111,49 +120,6 @@ const MobileDrawingControls = ({ color, setColor, lineWidth, setLineWidth }) => 
       </div>
     </SheetContent>
   </Sheet>
-);
-
-const MobileNavigation = ({ pages, currentPageIndex, onPageChange }) => (
-  <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-10"> {/*Added z-index*/}
-    <div className="flex items-center justify-between max-w-md mx-auto">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => onPageChange(currentPageIndex - 1)}
-        disabled={currentPageIndex === 0}
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </Button>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="flex items-center gap-2">
-            Page {currentPageIndex + 1} of {pages.length}
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          {pages.map((page, index) => (
-            <DropdownMenuItem
-              key={page.id}
-              onClick={() => onPageChange(index)}
-            >
-              {page.name}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => onPageChange(currentPageIndex + 1)}
-        disabled={currentPageIndex === pages.length - 1}
-      >
-        <ChevronRight className="h-6 w-6" />
-      </Button>
-    </div>
-  </div>
 );
 
 const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
@@ -249,6 +215,49 @@ const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
   );
 };
 
+const MobileNavigation = ({ pages, currentPageIndex, onPageChange }) => (
+  <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-10">
+    <div className="flex items-center justify-between max-w-md mx-auto">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => onPageChange(currentPageIndex - 1)}
+        disabled={currentPageIndex === 0}
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </Button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="flex items-center gap-2">
+            Page {currentPageIndex + 1} of {pages.length}
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {pages.map((page, index) => (
+            <DropdownMenuItem
+              key={page.id}
+              onClick={() => onPageChange(index)}
+            >
+              {page.name}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => onPageChange(currentPageIndex + 1)}
+        disabled={currentPageIndex === pages.length - 1}
+      >
+        <ChevronRight className="h-6 w-6" />
+      </Button>
+    </div>
+  </div>
+);
+
 const Whiteboard = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const platform = usePlatform();
@@ -256,27 +265,23 @@ const Whiteboard = () => {
   const [color, setColor] = useState('#000000');
   const [lineWidth, setLineWidth] = useState(2);
   const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false); // Added state for drawing
-  const [pages, setPages] = useState([{id:1, name: 'Page 1'}]); //Example pages
-  const [currentPageIndex, setCurrentPageIndex] = useState(0); //Example currentPageIndex
-  const [folders, setFolders] = useState([]); //Example folders
-  const [currentFolder, setCurrentFolder] = useState(null); //Example currentFolder
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [pages, setPages] = useState([{id:1, name: 'Page 1'}]);
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [folders, setFolders] = useState([]);
+  const [currentFolder, setCurrentFolder] = useState(null);
 
   const saveCurrentPage = () => {
-    //Implementation for saving current page
     console.log("Saving current page");
-  }
+  };
 
   const clearCanvas = () => {
-    //Implementation to clear canvas
     console.log("Clearing canvas");
-  }
+  };
 
   const takeScreenshot = () => {
-    //Implementation to take screenshot
     console.log("Taking screenshot");
-  }
-
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -285,19 +290,15 @@ const Whiteboard = () => {
         const parent = canvas.parentElement;
         const devicePixelRatio = window.devicePixelRatio || 1;
 
-        // Set canvas size in pixels
         canvas.width = parent.offsetWidth * devicePixelRatio;
         canvas.height = parent.offsetHeight * devicePixelRatio;
 
-        // Scale canvas for high DPI displays
         const ctx = canvas.getContext('2d');
         ctx.scale(devicePixelRatio, devicePixelRatio);
 
-        // Set display size
         canvas.style.width = `${parent.offsetWidth}px`;
         canvas.style.height = `${parent.offsetHeight}px`;
 
-        // Restore drawing settings
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.strokeStyle = color;
@@ -310,7 +311,6 @@ const Whiteboard = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [color, lineWidth]);
 
-  // Touch drawing handlers
   const handleDrawStart = (x, y) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
@@ -339,10 +339,10 @@ const Whiteboard = () => {
   };
 
   return (
-    <div className="h-screen w-full fixed inset-0 flex flex-col overflow-hidden touch-none bg-gray-50"> {/* Updated className */}
+    <div className="h-screen w-full fixed inset-0 flex flex-col overflow-hidden touch-none bg-gray-50">
       {isMobile ? (
         <>
-          <div className="z-10"> {/*Added z-index*/}
+          <div className="z-10">
             <MobileHeader
               onMenuOpen={() => setShowMobileMenu(true)}
               title={pages[currentPageIndex].name}
@@ -350,24 +350,17 @@ const Whiteboard = () => {
           </div>
 
           <Sheet open={showMobileMenu} onOpenChange={setShowMobileMenu}>
-            <SheetContent side="left" className="w-4/5 z-20"> {/*Added z-index*/}
+            <SheetContent side="left" className="w-4/5 z-20">
               <SheetHeader>
                 <SheetTitle>Navigation</SheetTitle>
               </SheetHeader>
               <div className="mt-4">
-                <FolderTree
-                  folders={folders}
-                  currentFolder={currentFolder}
-                  onFolderSelect={(folder) => {
-                    setCurrentFolder(folder);
-                    setShowMobileMenu(false);
-                  }}
-                />
+                {/* Placeholder for folder tree */}
               </div>
             </SheetContent>
           </Sheet>
 
-          <main className="flex-1 relative overflow-hidden touch-none"> {/* Updated className */}
+          <main className="flex-1 relative overflow-hidden touch-none">
             <MobileDrawingSurface
               canvasRef={canvasRef}
               platform={platform}
@@ -384,7 +377,7 @@ const Whiteboard = () => {
             />
           </main>
 
-          <div className="z-10"> {/*Added z-index*/}
+          <div className="z-10">
             <MobileNavigation
               pages={pages}
               currentPageIndex={currentPageIndex}
@@ -395,7 +388,7 @@ const Whiteboard = () => {
             />
           </div>
 
-          <div className="fixed bottom-20 left-4 z-20"> {/*Added z-index*/}
+          <div className="fixed bottom-20 left-4 z-20">
             <div className="flex flex-col gap-2">
               <Button
                 variant="outline"
@@ -417,7 +410,6 @@ const Whiteboard = () => {
           </div>
         </>
       ) : (
-        // Placeholder for desktop layout - needs to be replaced with actual desktop code
         <div>Desktop Layout</div>
       )}
     </div>
