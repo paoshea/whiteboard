@@ -463,6 +463,89 @@ npx prettier --write .
   - Feature updates
 ```
 
+## 🎯 Competitive Landscape
+
+### 1. Digital Whiteboard Apps
+```typescript
+Microsoft Whiteboard:
+- Real-time collaboration
+- Infinite canvas
+- Multi-platform support
+- Integration with Microsoft 365
+
+Miro:
+- Team collaboration focus
+- Template library
+- Sticky notes and diagrams
+- Third-party integrations
+
+FigJam:
+- Design-focused whiteboarding
+- Rich collaboration features
+- Interactive components
+- Professional templates
+```
+
+### 2. Drawing/Sketching Apps
+```typescript
+Procreate (iOS):
+- Professional drawing tools
+- Layer support
+- Advanced brush engine
+- Export options
+
+GoodNotes:
+- Note-taking focus
+- PDF annotation
+- Handwriting recognition
+- Document organization
+```
+
+### 3. Education-Focused
+```typescript
+Explain Everything:
+- Teaching focus
+- Screen recording
+- Interactive lessons
+- Cloud storage
+
+Jamboard (Google):
+- Simple interface
+- Google Workspace integration
+- Real-time collaboration
+- Basic drawing tools
+```
+
+### 4. Similar Open Source Projects
+```typescript
+Excalidraw:
+- Simple interface
+- Collaborative features
+- Export/import support
+- Self-hosted option
+
+Whiteboard.fi:
+- Education focused
+- Real-time classroom use
+- Teacher controls
+- Free basic version
+```
+
+### Key Features Across Platforms
+1. Real-time collaboration
+2. Cloud storage
+3. Multiple device support
+4. Export options
+5. Organization tools
+
+## 📞 Support
+
+For support:
+- Open an issue in the GitHub repository
+- Join our Discord community
+- Check the documentation
+- Contact the maintainers directly
+
 ## Action Items
 
 1. Initial Implementation:
