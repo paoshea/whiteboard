@@ -182,10 +182,10 @@ const Whiteboard = () => {
             <Input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-12 h-9 p-1" />
             <Input type="number" value={lineWidth} onChange={(e) => setLineWidth(Number(e.target.value))} min="1" max="20" className="w-20" />
           </div>
-          <form onSubmit={addTag} className="flex gap-2 mb-4 max-w-[50%]">
-            <Input type="text" value={currentTag} onChange={(e) => setCurrentTag(e.target.value)} placeholder="Add tag..." className="w-32" />
-            <Button type="submit" variant="outline" className="flex items-center gap-1">
-              <Tag className="w-3 h-3" /> Tag
+          <form onSubmit={addTag} className="flex gap-2 mb-4">
+            <Input type="text" value={currentTag} onChange={(e) => setCurrentTag(e.target.value)} placeholder="Add a tag..." className="flex-1" />
+            <Button type="submit" variant="outline" className="flex items-center gap-2">
+              <Tag className="w-4 h-4" /> Add Tag
             </Button>
           </form>
           {pages[currentPageIndex].tags.length > 0 && (
