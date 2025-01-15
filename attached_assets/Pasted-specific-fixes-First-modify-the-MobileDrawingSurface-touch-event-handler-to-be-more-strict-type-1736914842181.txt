@@ -1,0 +1,114 @@
+specific fixes:
+
+First, modify the MobileDrawingSurface touch event handler to be more strict:
+
+typescriptCopyconst MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
+  useEffect(() => {
+    // Prevent ALL touch events at document level
+    const preventAllTouchMove = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    // More aggressive touch prevention
+    document.documentElement.style.position = 'fixed';  // Lock html element
+    document.documentElement.style.overflow = 'hidden'; // Lock html overflow
+    document.body.style.position = 'fixed';            // Lock body
+    document.body.style.overflow = 'hidden';           // Lock body overflow
+    document.body.style.touchAction = 'none';          // Disable all touch actions
+    document.body.style.overscrollBehavior = 'none';   // Prevent bounce
+    document.body.style.height = '100%';
+    document.body.style.width = '100%';
+
+    // Add listeners to both document and body
+    document.addEventListener('touchmove', preventAllTouchMove, { passive: false });
+    document.addEventListener('touchstart', preventAllTouchMove, { passive: false });
+    document.body.addEventListener('touchmove', preventAllTouchMove, { passive: false });
+    document.body.addEventListener('touchstart', preventAllTouchMove, { passive: false });
+
+    return () => {
+      // Clean up
+      document.documentElement.style.position = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+      document.body.style.overscrollBehavior = '';
+      document.body.style.height = '';
+      document.body.style.width = '';
+      
+      document.removeEventListener('touchmove', preventAllTouchMove);
+      document.removeEventListener('touchstart', preventAllTouchMove);
+      document.body.removeEventListener('touchmove', preventAllTouchMove);
+      document.body.removeEventListener('touchstart', preventAllTouchMove);
+    };
+  }, []);
+
+  return (
+    <div 
+      className="absolute inset-0 touch-none overscroll-none"
+      style={{
+        position: 'fixed',          // Change to fixed
+        overflow: 'hidden',
+        touchAction: 'none',        // Disable touch actions
+        WebkitOverflowScrolling: 'none', // Disable momentum scrolling
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        height: '100%',
+        width: '100%'
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full bg-white touch-none"
+        style={{
+          touchAction: 'none',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          WebkitTouchCallout: 'none',
+          WebkitTapHighlightColor: 'transparent',
+          overscrollBehavior: 'none',
+          maxHeight: '100%',
+          maxWidth: '100%'
+        }}
+        onTouchStart={props.onDrawStart}
+        onTouchMove={props.onDraw}
+        onTouchEnd={props.onDrawEnd}
+        {...props}
+      />
+    </div>
+  );
+};
+
+In the main Whiteboard component, update the root container:
+
+typescriptCopyreturn (
+  <div 
+    className="fixed inset-0 flex flex-col bg-gray-50 touch-none"
+    style={{
+      position: 'fixed',
+      height: '100%',
+      width: '100%',
+      overflow: 'hidden',
+      touchAction: 'none',
+      WebkitOverflowScrolling: 'none'
+    }}
+  >
+    {/* Rest of your components */}
+  </div>
+);
+
+Add a meta tag in your HTML head:
+
+htmlCopy<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+These changes:
+
+Prevent all touch events more aggressively
+Lock both html and body elements
+Disable touch actions completely
+Prevent scaling and viewport manipulation
+Use fixed positioning throughout
+Disable WebKit overflow scrolling
