@@ -159,22 +159,36 @@ const MobileNavigation = ({ pages, currentPageIndex, onPageChange }) => (
 const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
   useEffect(() => {
     const preventBehavior = (e) => {
-      e.preventDefault();
+      if (e.touches.length === 1) {
+        e.preventDefault();
+      }
     };
 
+    const preventElasticScroll = (e) => {
+      if (e.touches.length === 1) {
+        e.preventDefault();
+      }
+    };
+
+    // Prevent default touch behaviors
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
     document.body.style.width = '100%';
     document.body.style.height = '100%';
+    document.body.style.overscrollBehavior = 'none';
 
+    // Add touch event listeners
     document.addEventListener('touchmove', preventBehavior, { passive: false });
+    document.addEventListener('touchstart', preventElasticScroll, { passive: false });
 
     return () => {
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.width = '';
       document.body.style.height = '';
+      document.body.style.overscrollBehavior = '';
       document.removeEventListener('touchmove', preventBehavior);
+      document.removeEventListener('touchstart', preventElasticScroll);
     };
   }, []);
 
