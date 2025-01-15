@@ -124,7 +124,7 @@ const MobileNavigation = ({ pages, currentPageIndex, onPageChange }) => (
       >
         <ChevronLeft className="h-6 w-6" />
       </Button>
-      
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="flex items-center gap-2">
@@ -179,22 +179,26 @@ const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="touch-none w-full h-full bg-white"
-      style={{
-        // Optimize for mobile devices
-        touchAction: 'none',
-        WebkitTouchCallout: 'none',
-        WebkitUserSelect: 'none',
-        userSelect: 'none',
-      }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={props.onDrawEnd}
-      onTouchCancel={props.onDrawEnd}
-      {...props}
-    />
+    <div className="fixed inset-0 overflow-hidden">
+      <canvas
+        ref={canvasRef}
+        className="touch-none w-full h-full bg-white"
+        style={{
+          touchAction: 'none',
+          WebkitTouchCallout: 'none',
+          WebkitUserSelect: 'none',
+          userSelect: 'none',
+          position: 'absolute',
+          top: 0,
+          left: 0
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={props.onDrawEnd}
+        onTouchCancel={props.onDrawEnd}
+        {...props}
+      />
+    </div>
   );
 };
 
@@ -205,7 +209,27 @@ const Whiteboard = () => {
   const [color, setColor] = useState('#000000');
   const [lineWidth, setLineWidth] = useState(2);
   const canvasRef = useRef(null);
-  // ... other state declarations
+  const [isDrawing, setIsDrawing] = useState(false); // Added state for drawing
+  const [pages, setPages] = useState([{id:1, name: 'Page 1'}]); //Example pages
+  const [currentPageIndex, setCurrentPageIndex] = useState(0); //Example currentPageIndex
+  const [folders, setFolders] = useState([]); //Example folders
+  const [currentFolder, setCurrentFolder] = useState(null); //Example currentFolder
+
+  const saveCurrentPage = () => {
+    //Implementation for saving current page
+    console.log("Saving current page");
+  }
+
+  const clearCanvas = () => {
+    //Implementation to clear canvas
+    console.log("Clearing canvas");
+  }
+
+  const takeScreenshot = () => {
+    //Implementation to take screenshot
+    console.log("Taking screenshot");
+  }
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -213,19 +237,19 @@ const Whiteboard = () => {
         const canvas = canvasRef.current;
         const parent = canvas.parentElement;
         const devicePixelRatio = window.devicePixelRatio || 1;
-        
+
         // Set canvas size in pixels
         canvas.width = parent.offsetWidth * devicePixelRatio;
         canvas.height = parent.offsetHeight * devicePixelRatio;
-        
+
         // Scale canvas for high DPI displays
         const ctx = canvas.getContext('2d');
         ctx.scale(devicePixelRatio, devicePixelRatio);
-        
+
         // Set display size
         canvas.style.width = `${parent.offsetWidth}px`;
         canvas.style.height = `${parent.offsetHeight}px`;
-        
+
         // Restore drawing settings
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
@@ -244,7 +268,7 @@ const Whiteboard = () => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const ctx = canvas.getContext('2d');
-    
+
     ctx.beginPath();
     ctx.moveTo(x - rect.left, y - rect.top);
     setIsDrawing(true);
@@ -252,11 +276,11 @@ const Whiteboard = () => {
 
   const handleDraw = (x, y) => {
     if (!isDrawing) return;
-    
+
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const ctx = canvas.getContext('2d');
-    
+
     ctx.lineTo(x - rect.left, y - rect.top);
     ctx.stroke();
   };
@@ -275,7 +299,7 @@ const Whiteboard = () => {
             onMenuOpen={() => setShowMobileMenu(true)}
             title={pages[currentPageIndex].name}
           />
-          
+
           <Sheet open={showMobileMenu} onOpenChange={setShowMobileMenu}>
             <SheetContent side="left" className="w-4/5">
               <SheetHeader>
@@ -319,7 +343,7 @@ const Whiteboard = () => {
               setCurrentPageIndex(index);
             }}
           />
-          
+
           <div className="fixed bottom-20 left-4">
             <div className="flex flex-col gap-2">
               <Button
@@ -342,8 +366,8 @@ const Whiteboard = () => {
           </div>
         </>
       ) : (
-        // Desktop layout remains the same
-        // ... [Previous desktop layout code]
+        // Placeholder for desktop layout - needs to be replaced with actual desktop code
+        <div>Desktop Layout</div>
       )}
     </div>
   );
