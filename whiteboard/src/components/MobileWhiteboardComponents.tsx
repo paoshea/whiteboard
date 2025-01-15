@@ -65,7 +65,7 @@ const MobileDrawingControls = ({ color, setColor, lineWidth, setLineWidth }) => 
   <Sheet>
     <SheetTrigger asChild>
       <Button
-        className="fixed bottom-20 right-4 rounded-full shadow-lg"
+        className="fixed bottom-20 right-4 rounded-full shadow-lg z-20" //Added z-index
         size="icon"
       >
         <Edit2 className="h-6 w-6" />
@@ -114,7 +114,7 @@ const MobileDrawingControls = ({ color, setColor, lineWidth, setLineWidth }) => 
 );
 
 const MobileNavigation = ({ pages, currentPageIndex, onPageChange }) => (
-  <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
+  <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-10"> {/*Added z-index*/}
     <div className="flex items-center justify-between max-w-md mx-auto">
       <Button
         variant="ghost"
@@ -166,9 +166,9 @@ const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
     document.body.style.position = 'fixed';
     document.body.style.width = '100%';
     document.body.style.height = '100%';
-    
+
     document.addEventListener('touchmove', preventBehavior, { passive: false });
-    
+
     return () => {
       document.body.style.overflow = '';
       document.body.style.position = '';
@@ -316,16 +316,18 @@ const Whiteboard = () => {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col bg-gray-50">
+    <div className="h-screen w-full fixed inset-0 flex flex-col overflow-hidden touch-none bg-gray-50"> {/* Updated className */}
       {isMobile ? (
         <>
-          <MobileHeader
-            onMenuOpen={() => setShowMobileMenu(true)}
-            title={pages[currentPageIndex].name}
-          />
+          <div className="z-10"> {/*Added z-index*/}
+            <MobileHeader
+              onMenuOpen={() => setShowMobileMenu(true)}
+              title={pages[currentPageIndex].name}
+            />
+          </div>
 
           <Sheet open={showMobileMenu} onOpenChange={setShowMobileMenu}>
-            <SheetContent side="left" className="w-4/5">
+            <SheetContent side="left" className="w-4/5 z-20"> {/*Added z-index*/}
               <SheetHeader>
                 <SheetTitle>Navigation</SheetTitle>
               </SheetHeader>
@@ -342,7 +344,7 @@ const Whiteboard = () => {
             </SheetContent>
           </Sheet>
 
-          <main className="flex-1 relative">
+          <main className="flex-1 relative overflow-hidden touch-none"> {/* Updated className */}
             <MobileDrawingSurface
               canvasRef={canvasRef}
               platform={platform}
@@ -359,16 +361,18 @@ const Whiteboard = () => {
             />
           </main>
 
-          <MobileNavigation
-            pages={pages}
-            currentPageIndex={currentPageIndex}
-            onPageChange={(index) => {
-              saveCurrentPage();
-              setCurrentPageIndex(index);
-            }}
-          />
+          <div className="z-10"> {/*Added z-index*/}
+            <MobileNavigation
+              pages={pages}
+              currentPageIndex={currentPageIndex}
+              onPageChange={(index) => {
+                saveCurrentPage();
+                setCurrentPageIndex(index);
+              }}
+            />
+          </div>
 
-          <div className="fixed bottom-20 left-4">
+          <div className="fixed bottom-20 left-4 z-20"> {/*Added z-index*/}
             <div className="flex flex-col gap-2">
               <Button
                 variant="outline"
