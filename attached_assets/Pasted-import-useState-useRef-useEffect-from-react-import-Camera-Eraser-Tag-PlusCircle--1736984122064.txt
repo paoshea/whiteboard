@@ -1,0 +1,201 @@
+import { useState, useRef, useEffect } from 'react';
+import { 
+  Camera, Eraser, Tag, PlusCircle, ChevronLeft, ChevronRight, Edit2, MoreVertical, ChevronDown 
+} from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/Sheet";
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+
+const usePlatform = () => {
+  const [platform, setPlatform] = useState({
+    isIOS: false,
+    isAndroid: false,
+    isMobile: false,
+    isTablet: false
+  });
+
+  useEffect(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    setPlatform({
+      isIOS: /iphone|ipad|ipod/.test(ua),
+      isAndroid: /android/.test(ua),
+      isMobile: /mobile/.test(ua),
+      isTablet: /tablet|ipad/.test(ua) || (window.innerWidth >= 768 && window.innerWidth <= 1024)
+    });
+  }, []);
+
+  return platform;
+};
+
+const MobileHeader = ({ onMenuOpen, title }) => (
+  <div className="flex items-center justify-between p-4 border-b bg-white">
+    <button variant="ghost" size="icon" onClick={onMenuOpen}>
+      <Edit2 className="h-6 w-6" />
+    </button>
+    <h1 className="text-lg font-medium truncate">{title}</h1>
+    <button variant="ghost" size="icon">
+      <MoreVertical className="h-6 w-6" />
+    </button>
+  </div>
+);
+
+const MobileDrawingControls = ({ color, setColor, lineWidth, setLineWidth }) => (
+  <Sheet>
+    <SheetTrigger asChild>
+      <button className="fixed bottom-20 right-4 rounded-full shadow-lg z-20" size="icon">
+        <Edit2 className="h-6 w-6" />
+      </button>
+    </SheetTrigger>
+    <SheetContent side="bottom" className="h-72">
+      <div className="space-y-4 py-4">
+        <div className="flex items-center justify-around">
+          <div className="text-center">
+            <div className="mb-2">Color</div>
+            <input
+              type="color"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              className="w-16 h-16"
+            />
+          </div>
+          <div className="text-center">
+            <div className="mb-2">Width</div>
+            <div className="flex flex-col items-center">
+              <input
+                type="range"
+                min="1"
+                max="20"
+                value={lineWidth}
+                onChange={(e) => setLineWidth(Number(e.target.value))}
+                className="w-32"
+              />
+              <span className="mt-2">{lineWidth}px</span>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          {["#000000", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#FFFFFF"].map(colorOption => (
+            <button
+              key={colorOption}
+              className="w-12 h-12 rounded-full border"
+              style={{ backgroundColor: colorOption }}
+              onClick={() => setColor(colorOption)}
+            />
+          ))}
+        </div>
+      </div>
+    </SheetContent>
+  </Sheet>
+);
+
+const MobileDrawingSurface = ({ canvasRef, ...props }) => {
+  const handleTouchStart = (e) => {
+    e.preventDefault(); // Prevent scrolling while drawing
+    const touch = e.touches[0];
+    props.onDrawStart(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // Prevent scrolling while moving the finger
+    const touch = e.touches[0];
+    props.onDraw(touch.clientX, touch.clientY);
+  };
+
+  return (
+    <div
+      className="absolute inset-0"
+      style={{
+        touchAction: 'none', // Disable default gestures like scroll and zoom only on canvas
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full bg-white"
+        style={{
+          touchAction: 'none',
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          WebkitTapHighlightColor: 'transparent',
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={props.onDrawEnd}
+        onTouchCancel={props.onDrawEnd}
+      />
+    </div>
+  );
+};
+
+const Whiteboard = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const platform = usePlatform();
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [color, setColor] = useState('#000000');
+  const [lineWidth, setLineWidth] = useState(2);
+  const canvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  const handleDrawStart = (x, y) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+
+    ctx.beginPath();
+    ctx.moveTo(x - rect.left, y - rect.top);
+    setIsDrawing(true);
+  };
+
+  const handleDraw = (x, y) => {
+    if (!isDrawing) return;
+
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+
+    ctx.lineTo(x - rect.left, y - rect.top);
+    ctx.stroke();
+  };
+
+  const handleDrawEnd = () => {
+    setIsDrawing(false);
+    const ctx = canvasRef.current.getContext('2d');
+    ctx.closePath();
+  };
+
+  return (
+    <div className="h-screen w-full fixed inset-0 flex flex-col overflow-hidden bg-gray-50">
+      {isMobile ? (
+        <>
+          <MobileHeader
+            onMenuOpen={() => setShowMobileMenu(true)}
+            title="Whiteboard"
+          />
+          <main className="flex-1 relative overflow-hidden">
+            <MobileDrawingSurface
+              canvasRef={canvasRef}
+              isDrawing={isDrawing}
+              onDrawStart={handleDrawStart}
+              onDraw={handleDraw}
+              onDrawEnd={handleDrawEnd}
+            />
+            <MobileDrawingControls
+              color={color}
+              setColor={setColor}
+              lineWidth={lineWidth}
+              setLineWidth={setLineWidth}
+            />
+          </main>
+        </>
+      ) : (
+        <div>Desktop Layout</div>
+      )}
+    </div>
+  );
+};
+
+export default Whiteboard;
