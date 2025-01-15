@@ -158,37 +158,39 @@ const MobileNavigation = ({ pages, currentPageIndex, onPageChange }) => (
 
 const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
   useEffect(() => {
-    const preventBehavior = (e) => {
-      if (e.touches.length === 1) {
-        e.preventDefault();
-      }
+    const preventAllTouchMove = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
     };
 
-    const preventElasticScroll = (e) => {
-      if (e.touches.length === 1) {
-        e.preventDefault();
-      }
-    };
-
-    // Prevent default touch behaviors
-    document.body.style.overflow = 'hidden';
+    document.documentElement.style.position = 'fixed';
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-    document.body.style.height = '100%';
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
     document.body.style.overscrollBehavior = 'none';
+    document.body.style.height = '100%';
+    document.body.style.width = '100%';
 
-    // Add touch event listeners
-    document.addEventListener('touchmove', preventBehavior, { passive: false });
-    document.addEventListener('touchstart', preventElasticScroll, { passive: false });
+    document.addEventListener('touchmove', preventAllTouchMove, { passive: false });
+    document.addEventListener('touchstart', preventAllTouchMove, { passive: false });
+    document.body.addEventListener('touchmove', preventAllTouchMove, { passive: false });
+    document.body.addEventListener('touchstart', preventAllTouchMove, { passive: false });
 
     return () => {
-      document.body.style.overflow = '';
+      document.documentElement.style.position = '';
+      document.documentElement.style.overflow = '';
       document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
       document.body.style.overscrollBehavior = '';
-      document.removeEventListener('touchmove', preventBehavior);
-      document.removeEventListener('touchstart', preventElasticScroll);
+      document.body.style.height = '';
+      document.body.style.width = '';
+      
+      document.removeEventListener('touchmove', preventAllTouchMove);
+      document.removeEventListener('touchstart', preventAllTouchMove);
+      document.body.removeEventListener('touchmove', preventAllTouchMove);
+      document.body.removeEventListener('touchstart', preventAllTouchMove);
     };
   }, []);
 
@@ -209,11 +211,18 @@ const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
   };
 
   return (
-    <div className="absolute inset-0 touch-none overscroll-none"
-         style={{
-           overflow: 'hidden',
-           WebkitOverflowScrolling: 'touch',
-         }}>
+    <div 
+      className="absolute inset-0 touch-none overscroll-none"
+      style={{
+        position: 'fixed',
+        overflow: 'hidden',
+        touchAction: 'none',
+        WebkitOverflowScrolling: 'none',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        height: '100%',
+        width: '100%'
+      }}>
       <canvas
         ref={canvasRef}
         className="w-full h-full bg-white touch-none"
