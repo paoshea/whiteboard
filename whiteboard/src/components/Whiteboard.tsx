@@ -58,7 +58,7 @@ type Page = {
 };
 
 const WaterfallLogo = () => (
-  <svg className="absolute top-0 left-0 w-full h-full opacity-70 pointer-events-none" viewBox="0 0 100 100">
+  <svg className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 opacity-70 pointer-events-none" viewBox="0 0 100 100">
     <defs>
       <linearGradient id="waterfall" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" style={{ stopColor: '#4a9eff', stopOpacity: 0.4 }} />
