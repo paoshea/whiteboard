@@ -127,11 +127,42 @@ const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    canvas.style.touchAction = 'none';
+    // Apply maximum scroll prevention
+    document.documentElement.style.position = 'fixed';
+    document.documentElement.style.width = '100%';
+    document.documentElement.style.height = '100%';
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
     document.body.style.overscrollBehavior = 'none';
+    canvas.style.touchAction = 'none';
+    
+    const preventDefault = (e) => {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    };
+
+    // Prevent all touch events at document level
+    document.addEventListener('touchmove', preventDefault, { passive: false });
+    document.addEventListener('touchstart', preventDefault, { passive: false });
 
     return () => {
+      document.documentElement.style.position = '';
+      document.documentElement.style.width = '';
+      document.documentElement.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
       document.body.style.overscrollBehavior = '';
+      document.removeEventListener('touchmove', preventDefault);
+      document.removeEventListener('touchstart', preventDefault);
     };
   }, []);
 
