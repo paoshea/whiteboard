@@ -1,0 +1,133 @@
+import { useState, useRef, useEffect } from 'react';
+import { Camera, Eraser, Edit2 } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+
+const MobileDrawingSurface = ({ canvasRef, ...props }) => {
+  useEffect(() => {
+    const disableScroll = (e) => e.preventDefault();
+
+    // Prevent scrolling only when touch is detected on the canvas
+    const canvas = canvasRef.current;
+    canvas.addEventListener('touchstart', disableScroll, { passive: false });
+    canvas.addEventListener('touchmove', disableScroll, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('touchstart', disableScroll);
+      canvas.removeEventListener('touchmove', disableScroll);
+    };
+  }, [canvasRef]);
+
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    props.onDrawStart(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    props.onDraw(touch.clientX, touch.clientY);
+  };
+
+  return (
+    <div
+      className="absolute inset-0"
+      style={{
+        touchAction: 'none',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        WebkitTapHighlightColor: 'transparent',
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full bg-white"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={props.onDrawEnd}
+        onTouchCancel={props.onDrawEnd}
+      />
+    </div>
+  );
+};
+
+const Whiteboard = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const [color, setColor] = useState('#000000');
+  const [lineWidth, setLineWidth] = useState(2);
+  const canvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  const handleDrawStart = (x, y) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.moveTo(x - rect.left, y - rect.top);
+    setIsDrawing(true);
+  };
+
+  const handleDraw = (x, y) => {
+    if (!isDrawing) return;
+
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+    ctx.lineTo(x - rect.left, y - rect.top);
+    ctx.stroke();
+  };
+
+  const handleDrawEnd = () => {
+    setIsDrawing(false);
+    const ctx = canvasRef.current.getContext('2d');
+    ctx.closePath();
+  };
+
+  return (
+    <div className="h-screen w-full fixed inset-0 flex flex-col overflow-hidden bg-gray-50">
+      {isMobile ? (
+        <main className="flex-1 relative overflow-hidden">
+          <MobileDrawingSurface
+            canvasRef={canvasRef}
+            isDrawing={isDrawing}
+            onDrawStart={handleDrawStart}
+            onDraw={handleDraw}
+            onDrawEnd={handleDrawEnd}
+          />
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="fixed bottom-20 right-4 rounded-full shadow-lg z-20">
+                <Edit2 className="h-6 w-6" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-72">
+              <div className="space-y-4 py-4">
+                <div className="flex items-center justify-around">
+                  <input
+                    type="color"
+                    value={color}
+                    onChange={(e) => setColor(e.target.value)}
+                    className="w-16 h-16"
+                  />
+                  <input
+                    type="range"
+                    min="1"
+                    max="20"
+                    value={lineWidth}
+                    onChange={(e) => setLineWidth(Number(e.target.value))}
+                    className="w-32"
+                  />
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </main>
+      ) : (
+        <div>Desktop Layout</div>
+      )}
+    </div>
+  );
+};
+
+export default Whiteboard;
