@@ -211,7 +211,6 @@ const Whiteboard = () => {
       </Card>
 
       <div className="border rounded-lg overflow-hidden relative flex-grow">
-        <WaterfallLogo />
         <canvas ref={canvasRef} className="w-full h-full bg-white cursor-crosshair" onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} onMouseOut={stopDrawing} />
       </div>
 
