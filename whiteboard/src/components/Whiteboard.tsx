@@ -195,7 +195,12 @@ const Whiteboard = () => {
               <button onClick={() => setColor('#0000FF')} className="w-8 h-8 rounded border border-gray-300" style={{ background: '#0000FF' }}></button>
               <Input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-12 h-8 p-1" />
             </div>
-            <Input type="number" value={lineWidth} onChange={(e) => setLineWidth(Number(e.target.value))} min="1" max="20" className="w-20" />
+            <div className="flex gap-1 items-center">
+              <button onClick={() => setLineWidth(2)} className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center">2px</button>
+              <button onClick={() => setLineWidth(4)} className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center">4px</button>
+              <button onClick={() => setLineWidth(6)} className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center">6px</button>
+              <Input type="number" value={lineWidth} onChange={(e) => setLineWidth(Number(e.target.value))} min="1" max="20" className="w-20" />
+            </div>
           </div>
           <form onSubmit={addTag} className="flex gap-2 mb-4">
             <Input type="text" value={currentTag} onChange={(e) => setCurrentTag(e.target.value)} placeholder="Add a tag..." className="flex-1" />
