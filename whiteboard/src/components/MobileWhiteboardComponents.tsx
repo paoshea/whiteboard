@@ -124,52 +124,29 @@ const MobileDrawingControls = ({ color, setColor, lineWidth, setLineWidth }) => 
 
 const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
   useEffect(() => {
-    const preventAllTouchMove = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    document.documentElement.style.position = 'fixed';
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
+    canvas.style.touchAction = 'none';
     document.body.style.overscrollBehavior = 'none';
-    document.body.style.height = '100%';
-    document.body.style.width = '100%';
-
-    document.addEventListener('touchmove', preventAllTouchMove, { passive: false });
-    document.addEventListener('touchstart', preventAllTouchMove, { passive: false });
-    document.body.addEventListener('touchmove', preventAllTouchMove, { passive: false });
-    document.body.addEventListener('touchstart', preventAllTouchMove, { passive: false });
 
     return () => {
-      document.documentElement.style.position = '';
-      document.documentElement.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
       document.body.style.overscrollBehavior = '';
-      document.body.style.height = '';
-      document.body.style.width = '';
-      
-      document.removeEventListener('touchmove', preventAllTouchMove);
-      document.removeEventListener('touchstart', preventAllTouchMove);
-      document.body.removeEventListener('touchmove', preventAllTouchMove);
-      document.body.removeEventListener('touchstart', preventAllTouchMove);
     };
   }, []);
 
   const handleTouchStart = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e.cancelable) {
+      e.preventDefault();
+    }
     const touch = e.touches[0];
     props.onDrawStart(touch.clientX, touch.clientY);
   };
 
   const handleTouchMove = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e.cancelable) {
+      e.preventDefault();
+    }
     if (props.isDrawing) {
       const touch = e.touches[0];
       props.onDraw(touch.clientX, touch.clientY);
