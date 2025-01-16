@@ -57,17 +57,17 @@ type Page = {
   }>;
 };
 
-const WaterfallLogo = () => (
+const Logo = () => (
   <svg className="h-8 w-8 opacity-70" viewBox="0 0 100 100">
     <defs>
-      <linearGradient id="waterfall" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" style={{ stopColor: '#4a9eff', stopOpacity: 0.4 }} />
-        <stop offset="100%" style={{ stopColor: '#0066cc', stopOpacity: 0.3 }} />
+      <linearGradient id="logo" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style={{ stopColor: '#1a4b8c', stopOpacity: 0.6 }} />
+        <stop offset="100%" style={{ stopColor: '#002b5c', stopOpacity: 0.5 }} />
       </linearGradient>
     </defs>
     <path
       d="M30,0 C30,30 70,30 70,50 C70,70 30,70 30,100 M40,0 C40,20 60,20 60,40 C60,60 40,60 40,100 M50,0 C50,25 65,25 65,45 C65,65 50,65 50,100"
-      stroke="url(#waterfall)"
+      stroke="url(#logo)"
       fill="none"
       strokeWidth="2"
     />
@@ -76,8 +76,8 @@ const WaterfallLogo = () => (
 
 const Header = () => (
   <div className="flex items-center gap-2 p-4 border-b bg-white">
-    <WaterfallLogo />
-    <h1 className="text-xl font-semibold">Waterfall Whiteboard</h1>
+    <Logo />
+    <h1 className="text-xl font-semibold">Whiteboard</h1>
   </div>
 );
 
