@@ -188,7 +188,13 @@ const Whiteboard = () => {
             <Button onClick={takeScreenshot} variant="outline" className="flex items-center gap-2">
               <Camera className="w-4 h-4" /> Screenshot
             </Button>
-            <Input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-12 h-9 p-1" />
+            <div className="flex gap-1">
+              <button onClick={() => setColor('#000000')} className="w-8 h-8 rounded border border-gray-300" style={{ background: '#000000' }}></button>
+              <button onClick={() => setColor('#FF0000')} className="w-8 h-8 rounded border border-gray-300" style={{ background: '#FF0000' }}></button>
+              <button onClick={() => setColor('#00FF00')} className="w-8 h-8 rounded border border-gray-300" style={{ background: '#00FF00' }}></button>
+              <button onClick={() => setColor('#0000FF')} className="w-8 h-8 rounded border border-gray-300" style={{ background: '#0000FF' }}></button>
+              <Input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-12 h-8 p-1" />
+            </div>
             <Input type="number" value={lineWidth} onChange={(e) => setLineWidth(Number(e.target.value))} min="1" max="20" className="w-20" />
           </div>
           <form onSubmit={addTag} className="flex gap-2 mb-4">
