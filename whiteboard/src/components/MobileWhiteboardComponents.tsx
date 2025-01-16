@@ -127,42 +127,19 @@ const MobileDrawingSurface = ({ canvasRef, platform, ...props }) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Apply maximum scroll prevention
-    document.documentElement.style.position = 'fixed';
-    document.documentElement.style.width = '100%';
-    document.documentElement.style.height = '100%';
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-    document.body.style.height = '100%';
-    document.body.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
-    document.body.style.overscrollBehavior = 'none';
-    canvas.style.touchAction = 'none';
-    
-    const preventDefault = (e) => {
+    const disableScroll = (e) => {
       if (e.cancelable) {
         e.preventDefault();
       }
     };
 
-    // Prevent all touch events at document level
-    document.addEventListener('touchmove', preventDefault, { passive: false });
-    document.addEventListener('touchstart', preventDefault, { passive: false });
+    canvas.style.touchAction = 'none';
+    canvas.addEventListener('touchstart', disableScroll, { passive: false });
+    canvas.addEventListener('touchmove', disableScroll, { passive: false });
 
     return () => {
-      document.documentElement.style.position = '';
-      document.documentElement.style.width = '';
-      document.documentElement.style.height = '';
-      document.documentElement.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
-      document.body.style.overscrollBehavior = '';
-      document.removeEventListener('touchmove', preventDefault);
-      document.removeEventListener('touchstart', preventDefault);
+      canvas.removeEventListener('touchstart', disableScroll);
+      canvas.removeEventListener('touchmove', disableScroll);
     };
   }, []);
 
