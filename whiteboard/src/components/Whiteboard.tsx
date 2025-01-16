@@ -58,7 +58,7 @@ type Page = {
 };
 
 const WaterfallLogo = () => (
-  <svg className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 opacity-70 pointer-events-none" viewBox="0 0 100 100">
+  <svg className="h-8 w-8 opacity-70" viewBox="0 0 100 100">
     <defs>
       <linearGradient id="waterfall" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" style={{ stopColor: '#4a9eff', stopOpacity: 0.4 }} />
@@ -72,6 +72,13 @@ const WaterfallLogo = () => (
       strokeWidth="2"
     />
   </svg>
+);
+
+const Header = () => (
+  <div className="flex items-center gap-2 p-4 border-b bg-white">
+    <WaterfallLogo />
+    <h1 className="text-xl font-semibold">Waterfall Whiteboard</h1>
+  </div>
 );
 
 const Whiteboard = () => {
@@ -169,7 +176,9 @@ const Whiteboard = () => {
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto h-screen flex flex-col">
+    <div className="max-w-4xl mx-auto h-screen flex flex-col">
+      <Header />
+      <div className="p-4 flex-1 flex flex-col">
       <Card className="mb-4">
         <CardContent className="p-4">
           <div className="flex gap-2 mb-4">
@@ -222,6 +231,7 @@ const Whiteboard = () => {
           </Button>
         </div>
       </footer>
+    </div>
     </div>
   );
 };
