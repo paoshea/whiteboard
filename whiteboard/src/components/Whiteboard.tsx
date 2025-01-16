@@ -221,7 +221,7 @@ const Whiteboard = () => {
         </CardContent>
       </Card>
 
-      <div className="border rounded-lg overflow-hidden relative flex-grow">
+      <div className="border border-blue-200 rounded-lg overflow-hidden relative flex-grow">
         <canvas ref={canvasRef} className="w-full h-full bg-white cursor-crosshair" onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} onMouseOut={stopDrawing} />
       </div>
 
